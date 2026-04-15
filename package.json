@@ -1,0 +1,20 @@
+{
+  "name": "bc-oseberg-monitor",
+  "version": "1.0.0",
+  "description": "Automated BC Oseberg integration log monitor for Floyd AS",
+  "scripts": {
+    "monitor": "ts-node -r dotenv/config src/monitor.ts",
+    "monitor:visible": "HEADLESS=false ts-node -r dotenv/config src/monitor.ts",
+    "login": "ts-node src/login.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "playwright": "^1.44.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.0"
+  }
+}

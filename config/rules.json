@@ -1,0 +1,21 @@
+{
+  "rules": [
+    {
+      "id": "example-rule",
+      "description": "Description of what this rule handles",
+      "matchContains": [
+        "Part of the error message to match"
+      ],
+      "action": "requeue",
+      "slackEmoji": "🔄"
+    }
+  ],
+  "settings": {
+    "bcUrl": "https://businesscentral.dynamics.com/YOUR_ENVIRONMENT/?company=YOUR_COMPANY&dc=0",
+    "logPageUrl": "https://businesscentral.dynamics.com/YOUR_ENVIRONMENT/?company=YOUR_COMPANY&page=YOUR_PAGE_ID&filter=OSB_INT_LogEntry.ProcessStatus%20IS%20%273%27&dc=0",
+    "postedShipmentPageUrl": "https://businesscentral.dynamics.com/YOUR_ENVIRONMENT/?company=YOUR_COMPANY&page=142&dc=0",
+    "slackChannelId": "YOUR_SLACK_CHANNEL_ID",
+    "maxRetries": 3,
+    "headless": true
+  }
+}

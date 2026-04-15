@@ -1,0 +1,52 @@
+name: BC Oseberg Monitor
+
+on:
+  schedule:
+    # Runs every 30 minutes on weekdays between 07:00–18:00 CET (06:00–17:00 UTC)
+    - cron: "*/30 6-17 * * 1-5"
+  workflow_dispatch: # Can also be triggered manually from GitHub UI
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Restore auth state
+        run: |
+          mkdir -p .auth
+          echo "${{ secrets.BC_AUTH_STATE }}" | base64 -d > .auth/bc-state.json
+        continue-on-error: true
+
+      - name: Run monitor
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        run: npm run monitor
+
+      - name: Save updated auth state
+        run: |
+          if [ -f .auth/bc-state.json ]; then
+            AUTH_B64=$(base64 -w 0 .auth/bc-state.json)
+            echo "AUTH_STATE=$AUTH_B64" >> $GITHUB_ENV
+          fi
+
+      - name: Update BC_AUTH_STATE secret
+        if: env.AUTH_STATE != ''
+        uses: gliech/create-github-secret-action@v1
+        with:
+          name: BC_AUTH_STATE
+          value: ${{ env.AUTH_STATE }}
+          token: ${{ secrets.GH_PAT }}
